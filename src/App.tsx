@@ -68,6 +68,25 @@ const App = (): JSX.Element => {
     }
   };
 
+  const handleToggle = async (taskId: string) => {
+    const contract = contractRef.current;
+    const web3 = web3Ref.current;
+    const accounts = await web3?.eth.getAccounts();
+    contract.methods
+      .toggleCompleted(taskId)
+      .send({ from: accounts[0] })
+      .once('receipt', () => {
+        setTasks(prev =>
+          prev.map(task => {
+            if (task.id === taskId) {
+              task.completed = !task.completed;
+            }
+            return task;
+          })
+        );
+      });
+  };
+
   return (
     <ChakraProvider resetCSS theme={theme}>
       <ColorModeScript />
@@ -99,7 +118,11 @@ const App = (): JSX.Element => {
           </Button>
         </Flex>
         <Box width="100%" mt="4">
-          {loading ? <Spinner /> : <TaskList tasks={tasks} />}
+          {loading ? (
+            <Spinner />
+          ) : (
+            <TaskList tasks={tasks} onToggle={handleToggle} />
+          )}
         </Box>
       </Container>
     </ChakraProvider>
