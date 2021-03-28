@@ -13,7 +13,7 @@ const App = (): JSX.Element => {
   const [network, setNetwork] = useState<string>('');
   const [accounts, setAccounts] = useState<string[]>([]);
 
-  const loadBlockchainDate = async () => {
+  const loadBlockchainData = async () => {
     if (Web3.givenProvider) {
       const web3 = new Web3(Web3.givenProvider);
       const network = await web3.eth.net.getNetworkType();
@@ -24,7 +24,7 @@ const App = (): JSX.Element => {
   };
 
   useEffect(() => {
-    loadBlockchainDate();
+    loadBlockchainData();
   }, []);
 
   return (
@@ -46,7 +46,7 @@ const App = (): JSX.Element => {
               Accounts:
               <OrderedList pl="8">
                 {accounts.map(account => (
-                  <ListItem>
+                  <ListItem key={account}>
                     <strong>{account}</strong>
                   </ListItem>
                 ))}
